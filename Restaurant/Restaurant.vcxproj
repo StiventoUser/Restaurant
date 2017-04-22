@@ -145,7 +145,23 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Cook.cpp" />
+    <ClCompile Include="DishInfo.cpp" />
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Restaurant.cpp" />
+    <ClCompile Include="RestaurantInternal.cpp" />
+    <ClCompile Include="ThreadWrapper.cpp" />
+    <ClCompile Include="Waiter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Cook.h" />
+    <ClInclude Include="DishInfo.h" />
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="Restaurant.h" />
+    <ClInclude Include="RestaurantInternal.h" />
+    <ClInclude Include="ThreadWrapper.h" />
+    <ClInclude Include="Waiter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
