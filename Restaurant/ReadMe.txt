@@ -2,39 +2,29 @@
     CONSOLE APPLICATION : Restaurant Project Overview
 ========================================================================
 
-AppWizard has created this Restaurant application for you.
+**RestaurantCore: main class
+open(): opens the resturant and begins the day
+close(): close the restaurant after the end of a day. Also is called from destructor
 
-This file contains a summary of what you will find in each of the files that
-make up your Restaurant application.
+**ThreadWrapper: controls an object lifetime 
+getObject(): returns pointer to the controlled object
+isFinished(): checks has the object finished its work
+execute(): begins a new thread for the object
 
+**Cook: represents a cook
+work(): simulates the work (executed in another thread)
 
-Restaurant.vcxproj
-    This is the main project file for VC++ projects generated using an Application Wizard.
-    It contains information about the version of Visual C++ that generated the file, and
-    information about the platforms, configurations, and project features selected with the
-    Application Wizard.
+**Waiter: represents a waiter
+work(): simulates the work (executed in another thread)
 
-Restaurant.vcxproj.filters
-    This is the filters file for VC++ projects generated using an Application Wizard. 
-    It contains information about the association between the files in your project 
-    and the filters. This association is used in the IDE to show grouping of files with
-    similar extensions under a specific node (for e.g. ".cpp" files are associated with the
-    "Source Files" filter).
+**RestaurantInternal: encapsulates inter-thread communication and restaurant's internal data
+requestedDishName [get/set]: the dish name that is sent to the cook
+dishInfo [get/set]: prepared dish that is delivered by waiter
+restaurantClosed [get/set]: specifies that the restaurant should be closed and all threads must be terminated
+lockData(): ensures that the data can be modified
+notify(): generates an event
+waitFor(): blocks current thread until the specific event
 
-Restaurant.cpp
-    This is the main application source file.
+**Dish: represents a prepared dish
 
-/////////////////////////////////////////////////////////////////////////////
-Other standard files:
-
-StdAfx.h, StdAfx.cpp
-    These files are used to build a precompiled header (PCH) file
-    named Restaurant.pch and a precompiled types file named StdAfx.obj.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
-
-/////////////////////////////////////////////////////////////////////////////
+**Logger: a thread-safe class to output data with displaying time offset
