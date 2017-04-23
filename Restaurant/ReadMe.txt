@@ -25,6 +25,8 @@ lockData(): ensures that the data can be modified
 notify(): generates an event
 waitFor(): blocks current thread until the specific event
 
-**Dish: represents a prepared dish
+**DishInfo: represents a prepared dish
+dishName [getset]: the dish name
 
 **Logger: a thread-safe class to output data with displaying time offset
+operator<< : redirects output to the cout
