@@ -1,7 +1,5 @@
 #include "Cook.h"
 
-#include <chrono>
-
 #include "Logger.h"
 
 
@@ -9,28 +7,29 @@ namespace Restaurant
 {
 	Cook::Cook()
 	{
-		Logger() << "Cook constructed.";
+		Logger() << "Cook is ready to work.";
 	}
 
 
 	Cook::~Cook()
 	{
-		Logger() << "Cook destroyed.";
+		Logger() << "Cook has left the restaurant.";
 	}
+
 	void Cook::work(std::weak_ptr<RestaurantInternal> internal)
 	{
-		using namespace std::chrono_literals;
-
 		m_internal = internal;
 
-		while (true)//TODO
+		while (true)
 		{
 			if (auto ptr = m_internal.lock())
 			{
 				Logger() << "Cook is waiting...";
-				if (!ptr->waitFor(RestaurantInternal::Signal::DishRequested, 10.0s))
+				if (!ptr->waitFor(RestaurantInternal::Signal::DishRequested, RestaurantInternal::SignalWaitTime))
 				{
 					Logger() << "Cook is resting...";
+
+					auto lock = ptr->lockData(RestaurantInternal::DataWaitTime);
 					
 					if (ptr->isRestaurantClosed())
 					{
@@ -41,7 +40,7 @@ namespace Restaurant
 					continue;
 				}
 
-				auto lock = ptr->lockData(10.0s);
+				auto lock = ptr->lockData(RestaurantInternal::DataWaitTime);
 
 				if (!lock.owns_lock())
 				{
@@ -51,17 +50,18 @@ namespace Restaurant
 				}
 
 				Logger() << "The dish '" << ptr->getRequestedDishName() << "' is preparing...";
-				std::this_thread::sleep_for(2.0s);
-				Logger() << "The dish is prepared.";
+				std::this_thread::sleep_for(CookingTime);
+				Logger() << "The dish has been prepared.";
 
 				ptr->setDishInfo(DishInfo(ptr->getRequestedDishName()));
 
 				ptr->notify(RestaurantInternal::Signal::DishFinished);
 			}
+			else
+			{
+				Logger() << "Does internal exist?";
+				return;
+			}
 		}
-	}
-
-	void Cook::dishRequested()
-	{
 	}
 }

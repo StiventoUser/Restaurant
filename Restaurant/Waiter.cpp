@@ -5,28 +5,27 @@ namespace Restaurant
 {
 	Waiter::Waiter()
 	{
-		Logger() << "Waiter constructed.";
+		Logger() << "Waiter is ready to work.";
 	}
-
 
 	Waiter::~Waiter()
 	{
-		Logger() << "Waiter destroyed.";
+		Logger() << "Waiter has left the restaurant.";
 	}
 	void Waiter::work(std::weak_ptr<RestaurantInternal> internal)
 	{
-		using namespace std::chrono_literals;
-
 		m_internal = internal;
 
-		while (true)//TODO
+		while (true)
 		{
 			if (auto ptr = m_internal.lock())
 			{
 				Logger() << "Waiter is waiting...";
-				if (!ptr->waitFor(RestaurantInternal::Signal::DishFinished, 10.0s))
+				if (!ptr->waitFor(RestaurantInternal::Signal::DishFinished, RestaurantInternal::SignalWaitTime))
 				{
 					Logger() << "Waiter is resting...";
+
+					auto lock = ptr->lockData(RestaurantInternal::DataWaitTime);
 
 					if (ptr->isRestaurantClosed())
 					{
@@ -38,7 +37,7 @@ namespace Restaurant
 				}
 
 				{
-					auto lock = ptr->lockData(10.0s);
+					auto lock = ptr->lockData(RestaurantInternal::DataWaitTime);
 
 					if (!lock.owns_lock())
 					{
@@ -48,19 +47,20 @@ namespace Restaurant
 					}
 
 					Logger() << "The dish '" << ptr->getDishInfo().getDishName() << "' is delivering...";
-					std::this_thread::sleep_for(0.5s);
-					Logger() << "The dish is delivered.";
+					std::this_thread::sleep_for(DeliveringTime);
+					Logger() << "The dish has been delivered.";
 
 					ptr->notify(RestaurantInternal::Signal::DishDelivered);
 				}
 
 				Logger() << "Waiter is returing...";
-				std::this_thread::sleep_for(0.5s);
+				std::this_thread::sleep_for(DeliveringTime);
+			}
+			else
+			{
+				Logger() << "Does internal exist?";
+				return;
 			}
 		}
-	}
-
-	void Waiter::dishFinished()
-	{
 	}
 }

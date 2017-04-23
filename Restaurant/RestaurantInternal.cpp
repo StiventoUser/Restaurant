@@ -3,6 +3,10 @@
 
 namespace Restaurant
 {
+	const std::chrono::duration<long double> RestaurantInternal::SignalWaitTime = 5.0s;
+	const std::chrono::duration<long double> RestaurantInternal::DataWaitTime = 10.0s;
+	const std::chrono::duration<long double> RestaurantInternal::ThreadShutdownWaitTime = 15.0s;
+
 	RestaurantInternal::RestaurantInternal()
 	{
 		Logger() << "Internal constructed.";

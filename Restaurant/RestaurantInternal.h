@@ -10,6 +10,8 @@
 
 #include "DishInfo.h"
 
+using namespace std::chrono_literals;
+
 namespace Restaurant
 {
 	class RestaurantInternal
@@ -22,30 +24,13 @@ namespace Restaurant
 			DishRequested, DishFinished, DishDelivered
 		};
 
+		static const std::chrono::duration<long double> SignalWaitTime;
+		static const std::chrono::duration<long double> DataWaitTime;
+		static const std::chrono::duration<long double> ThreadShutdownWaitTime;
+
 	public:
 		RestaurantInternal();
 		~RestaurantInternal();
-
-		template<typename T>
-		void setSignalHandler(Signal signal, T func)
-		{
-			switch (signal)
-			{
-			case Signal::DishRequested:
-				//TODO CHECK IS EXISTS
-				m_newRequestCallback = [func] { func(); };
-				break;
-			case Signal::DishFinished:
-				m_dishFinishedCallback = [func] { func(); };
-				break;
-			case Signal::DishDelivered:
-				m_dishDeliveredCallback = [func] { func(); };
-				break;
-			default:
-				break;
-				//TODO ERROR
-			}
-		}
 
 		const std::string& getRequestedDishName() const;
 		void setRequstedDishName(const std::string dishName);
@@ -53,8 +38,8 @@ namespace Restaurant
 		const DishInfo& getDishInfo() const;
 		void setDishInfo(const DishInfo& dishInfo);
 
-		void closeRestaurant();
 		bool isRestaurantClosed() const;
+		void closeRestaurant();
 
 		std::unique_lock<std::timed_mutex> lockData(std::chrono::duration<long double> maxWaitTime);
 

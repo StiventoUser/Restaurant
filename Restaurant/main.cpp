@@ -3,11 +3,9 @@ using Restaurant::RestaurantCore;
 
 int main()
 {
-	{
-		RestaurantCore restaurant;
+	RestaurantCore restaurant;
 
-		restaurant.open();
-	}
+	restaurant.open();
 
     return 0;
 }
