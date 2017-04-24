@@ -30,6 +30,11 @@ namespace Restaurant
 					Logger() << "Cook is resting...";
 
 					auto lock = ptr->lockData(RestaurantInternal::DataWaitTime);
+
+					if (!lock.owns_lock())
+					{
+						continue;
+					}
 					
 					if (ptr->isRestaurantClosed())
 					{
@@ -40,22 +45,23 @@ namespace Restaurant
 					continue;
 				}
 
-				auto lock = ptr->lockData(RestaurantInternal::DataWaitTime);
-
-				if (!lock.owns_lock())
 				{
-					Logger() << "Cook can't get the request!";
-					Logger() << "Aborting...";
-					abort();
+					auto lock = ptr->lockData(RestaurantInternal::DataWaitTime);
+
+					if (!lock.owns_lock())
+					{
+						Logger() << "Cook can't get the request!";
+						return;
+					}
+
+					Logger() << "The dish '" << ptr->getRequestedDishName() << "' is preparing...";
+					std::this_thread::sleep_for(CookingTime);
+					Logger() << "The dish has been prepared.";
+
+					ptr->setDishInfo(DishInfo(ptr->getRequestedDishName()));
+
+					ptr->notify(RestaurantInternal::Signal::DishFinished);
 				}
-
-				Logger() << "The dish '" << ptr->getRequestedDishName() << "' is preparing...";
-				std::this_thread::sleep_for(CookingTime);
-				Logger() << "The dish has been prepared.";
-
-				ptr->setDishInfo(DishInfo(ptr->getRequestedDishName()));
-
-				ptr->notify(RestaurantInternal::Signal::DishFinished);
 			}
 			else
 			{

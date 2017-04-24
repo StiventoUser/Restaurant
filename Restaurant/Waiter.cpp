@@ -27,6 +27,11 @@ namespace Restaurant
 
 					auto lock = ptr->lockData(RestaurantInternal::DataWaitTime);
 
+					if (!lock.owns_lock())
+					{
+						continue;
+					}
+
 					if (ptr->isRestaurantClosed())
 					{
 						Logger() << "Waiter is going to go home.";
@@ -42,8 +47,7 @@ namespace Restaurant
 					if (!lock.owns_lock())
 					{
 						Logger() << "Waiter can't get the dish!";
-						Logger() << "Aborting...";
-						abort();
+						return;
 					}
 
 					Logger() << "The dish '" << ptr->getDishInfo().getDishName() << "' is delivering...";
