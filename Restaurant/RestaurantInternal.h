@@ -17,8 +17,6 @@ namespace Restaurant
 	class RestaurantInternal
 	{
 	public:
-		using CallbackFunc = std::function<void(void)>;
-	public:
 		enum class Signal : int8_t
 		{
 			DishRequested, DishFinished, DishDelivered
@@ -58,10 +56,6 @@ namespace Restaurant
 		std::mutex m_signalMutex;
 
 		Signal m_currentSignal;
-		
-		CallbackFunc m_newRequestCallback;
-		CallbackFunc m_dishFinishedCallback;
-		CallbackFunc m_dishDeliveredCallback;
 	};
 }
 
